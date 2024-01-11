@@ -1,0 +1,15 @@
+{
+  "name": "render-atom-bohr-js",
+  "version": "1.0.0",
+  "description": "A tool to render animated Atom Bohr Model",
+  "main": "dist/index.js",
+  "author": "infonautica",
+  "homepage": "https://github.com/Infonautica/render-atom-bohr-js",
+  "license": "MIT",
+  "scripts": {
+    "build:js": "tsc --project tsconfig.json"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}

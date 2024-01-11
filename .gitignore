@@ -1,0 +1,13 @@
+node_modules
+/public
+/dist
+/temp
+.vscode/*
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/settings.default.json
+.idea
+.DS_Store
+.yalc
+yalc.lock
+.env
