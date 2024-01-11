@@ -1,6 +1,10 @@
 # Render-atom-bohr-js
 
-A tool to render animated SVG Atom [Bohr Model](https://en.wikipedia.org/wiki/Bohr_model)
+A tool to render animated SVG Atom [Bohr Model](https://en.wikipedia.org/wiki/Bohr_model):
+
+https://github.com/Infonautica/render-atom-bohr-js/assets/5521648/bec02a35-dbea-480e-872c-155fd697be18
+
+
 
 ## Installation
 
