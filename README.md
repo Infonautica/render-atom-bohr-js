@@ -2,61 +2,49 @@
 
 A tool to render animated SVG Atom [Bohr Model](https://en.wikipedia.org/wiki/Bohr_model)
 
-## Documentation
+## Installation
 
-### Data getters
+Install it as a dependency using your package manager (npm, yarn, etc.):
 
-Package provides following functions to get the data:
-
-```ts
-// To get structured data for the whole table, including empty cells and element ranges
-export declare const getData: () => Data;
-
-// To get a specific element by it's periodic number
-export declare function getChemElement(periodicNumber: number): ChemElement;
+```sh
+yarn add render-atom-bohr-js
 ```
 
-### Types
+## How to use
 
-When you need the whole structured table, you need to operate with `Data` type.
-It's a two dimensional collection that has individual elements, ranges (like lanthanoids) and empty cells:
+Import package in your code:
 
 ```ts
-export type DataItem = ChemElement | ElementRange | null;
-export type Data = DataItem[][];
+import { renderAtom } from "render-atom-bohr-js";
 ```
 
-Each data item can be on of the followign types or `null`:
+Create a container in your markup with a unique selector. Beware that the content of the container will be erased before rendering:
+
+```html
+<div id="atom"></div>
+```
+
+Run the function with desired configuration:
 
 ```ts
-export type ChemElement = {
-  type: "element";
-  number: number;
-  symbol: string;
-  name: string;
-  atomicMass: number;
-  wikiSummary: string;
-  wikiUrl: string;
-  electronConfig: number[];
-  series: ElementSeries;
-};
+animateAtom({
+  elementPeriodicNumber: newState.selectedElementId,
+  containerSelector: ".atom",
+});
+```
 
-export type ElementRange = {
-  type: "range";
-  numberFrom: number;
-  numberTo: number;
-  series: ElementSeries;
-};
+## Configuration
 
-export type ElementSeries =
-  | "alkali-metals"
-  | "alkaline-earth-metals"
-  | "lanthanoids"
-  | "actinoids"
-  | "transition-metals"
-  | "post-transition-metals"
-  | "metalloids"
-  | "reactive-nonmetals"
-  | "noble-gases"
-  | "none";
+Rendering supports some basic configuration, see `RenderAtomOptions` type for a reference:
+
+```ts
+export type RenderAtomOptions = {
+  containerSelector: string; // An id, class or any selector of the container that will contain svg
+  elementPeriodicNumber: number; // 1-118. Number of the element from periodic table
+  animationDuration?: {
+    minimum: number; // In seconds, default is 6
+    maximum: number; // In seconds, default is 15
+  };
+  animated?: boolean; // Default "true"
+};
 ```

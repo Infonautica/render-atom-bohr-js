@@ -4,7 +4,7 @@ import { ChemElement, getChemElement } from "simple-periodic-table-data";
 
 gsap.registerPlugin(MotionPathPlugin);
 
-export type AnimateAtomOptions = {
+export type RenderAtomOptions = {
   containerSelector: string; // An id, class or any selector of the container that will contain svg
   elementPeriodicNumber: number; // 1-118. Number of the element from periodic table
   animationDuration?: {
@@ -46,7 +46,7 @@ function getContainer(selector: string) {
   return node;
 }
 
-export function animateAtom(options: AnimateAtomOptions) {
+export function renderAtom(options: RenderAtomOptions) {
   const element = getChemElement(options.elementPeriodicNumber);
 
   const container = getContainer(options.containerSelector);
@@ -167,14 +167,17 @@ function generateOrbit(element: ChemElement, orbitNumber: number) {
   const { horizontalCenter, verticalCenter, spacing } =
     calculateViewBox(element);
 
-  const moveToStart = `M ${horizontalCenter - spacing * orbitNumber
-    },${verticalCenter}`;
+  const moveToStart = `M ${
+    horizontalCenter - spacing * orbitNumber
+  },${verticalCenter}`;
 
   const arcRadius = spacing * orbitNumber;
-  const archFirstHalf = `A ${arcRadius},${arcRadius} 0 1 1 ${horizontalCenter + arcRadius
-    },${verticalCenter}`;
-  const archSecondHalf = `A ${arcRadius},${arcRadius} 0 1 1 ${horizontalCenter - arcRadius
-    },${verticalCenter}`;
+  const archFirstHalf = `A ${arcRadius},${arcRadius} 0 1 1 ${
+    horizontalCenter + arcRadius
+  },${verticalCenter}`;
+  const archSecondHalf = `A ${arcRadius},${arcRadius} 0 1 1 ${
+    horizontalCenter - arcRadius
+  },${verticalCenter}`;
 
   orbitNode.setAttribute(
     "d",
