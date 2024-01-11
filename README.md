@@ -4,8 +4,6 @@ A tool to render animated SVG Atom [Bohr Model](https://en.wikipedia.org/wiki/Bo
 
 https://github.com/Infonautica/render-atom-bohr-js/assets/5521648/bec02a35-dbea-480e-872c-155fd697be18
 
-
-
 ## Installation
 
 Install it as a dependency using your package manager (npm, yarn, etc.):
@@ -46,9 +44,23 @@ export type RenderAtomOptions = {
   containerSelector: string; // An id, class or any selector of the container that will contain svg
   elementPeriodicNumber: number; // 1-118. Number of the element from periodic table
   animationDuration?: {
-    minimum: number; // In seconds, default is 6
-    maximum: number; // In seconds, default is 15
+    minimum: number; // Default 6
+    maximum: number; // Default 15
   };
   animated?: boolean; // Default "true"
+
+  // Different atoms have different visual size, so we can toggle behavior.
+  //
+  // When the property is TRUE:
+  // - SVG has fixed viewBox
+  // - Small atoms occupy little space
+  // - Big atoms occupy lots of space
+  //
+  // When the property is FALSE:
+  // - SVG has dynamic viewBox, based on the size of the atom
+  // - Small and big atoms occupy all available space
+  //
+  // By default it's set to false
+  fixedViewBox?: boolean;
 };
 ```
