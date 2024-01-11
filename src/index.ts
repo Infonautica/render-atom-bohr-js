@@ -12,13 +12,42 @@ export type RenderAtomOptions = {
     maximum: number; // Default 15
   };
   animated?: boolean; // Default "true"
+
+  // Different atoms have different visual size, so we can toggle behavior.
+  //
+  // When the property is TRUE:
+  // - SVG has fixed viewBox
+  // - Small atoms occupy little space
+  // - Big atoms occupy lots of space
+  //
+  // When the property is FALSE:
+  // - SVG has dynamic viewBox, based on the size of the atom
+  // - Small and big atoms occupy all available space
+  //
+  // By default it's set to false
+  fixedViewBox?: boolean;
 };
 
-function calculateViewBox(element: ChemElement) {
-  const numberOfOrbits = element.electronConfig.length;
+function calculateViewBox(element: ChemElement, options: RenderAtomOptions) {
   const electronRadius = 5;
   const spacingBetweenOrbits = 30;
   const padding = 20;
+
+  if (options.fixedViewBox === true) {
+    const dimensionSize = 500;
+    const horizontalCenter = dimensionSize / 2;
+    const verticalCenter = dimensionSize / 2;
+
+    return {
+      width: dimensionSize,
+      height: dimensionSize,
+      horizontalCenter,
+      verticalCenter,
+      spacing: spacingBetweenOrbits,
+    };
+  }
+
+  const numberOfOrbits = element.electronConfig.length;
   const dimensionSize =
     numberOfOrbits * spacingBetweenOrbits * 2 +
     electronRadius * 2 +
@@ -52,13 +81,13 @@ export function renderAtom(options: RenderAtomOptions) {
   const container = getContainer(options.containerSelector);
   container.innerHTML = "";
 
-  const svg = generateSVG(element);
+  const svg = generateSVG(element, options);
   svg.innerHTML = "";
 
   container.append(svg);
 
   // Add Nucleus
-  const nucleusNode = generateNucleus(element);
+  const nucleusNode = generateNucleus(element, options);
   svg.appendChild(nucleusNode);
 
   element.electronConfig.forEach((electronsCount, index) => {
@@ -70,7 +99,7 @@ export function renderAtom(options: RenderAtomOptions) {
     const orbitNumber = index + 1;
 
     // Add Orbit
-    const orbitNode = generateOrbit(element, orbitNumber);
+    const orbitNode = generateOrbit(element, orbitNumber, options);
     svg.appendChild(orbitNode);
 
     // Add electrons
@@ -117,11 +146,11 @@ export function renderAtom(options: RenderAtomOptions) {
   });
 }
 
-function generateSVG(element: ChemElement) {
+function generateSVG(element: ChemElement, options: RenderAtomOptions) {
   const svgNode = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svgNode.classList.add("atom_svg");
 
-  const { height, width } = calculateViewBox(element);
+  const { height, width } = calculateViewBox(element, options);
   svgNode.setAttribute("viewBox", `0 0 ${width} ${height}`);
   svgNode.setAttribute("width", width.toString());
 
@@ -139,7 +168,7 @@ function generateElectron() {
   return electronNode;
 }
 
-function generateNucleus(element: ChemElement) {
+function generateNucleus(element: ChemElement, options: RenderAtomOptions) {
   const nucleusNode = document.createElementNS(
     "http://www.w3.org/2000/svg",
     "circle",
@@ -147,7 +176,10 @@ function generateNucleus(element: ChemElement) {
   nucleusNode.setAttribute("class", "atom_nucleus");
   nucleusNode.setAttribute("r", "15");
 
-  const { horizontalCenter, verticalCenter } = calculateViewBox(element);
+  const { horizontalCenter, verticalCenter } = calculateViewBox(
+    element,
+    options,
+  );
 
   nucleusNode.setAttribute("cx", horizontalCenter.toString());
   nucleusNode.setAttribute("cy", verticalCenter.toString());
@@ -155,7 +187,11 @@ function generateNucleus(element: ChemElement) {
   return nucleusNode;
 }
 
-function generateOrbit(element: ChemElement, orbitNumber: number) {
+function generateOrbit(
+  element: ChemElement,
+  orbitNumber: number,
+  options: RenderAtomOptions,
+) {
   const orbitNode = document.createElementNS(
     "http://www.w3.org/2000/svg",
     "path",
@@ -164,20 +200,19 @@ function generateOrbit(element: ChemElement, orbitNumber: number) {
   orbitNode.setAttribute("id", `orbit_${orbitNumber}`);
 
   // Path commands
-  const { horizontalCenter, verticalCenter, spacing } =
-    calculateViewBox(element);
+  const { horizontalCenter, verticalCenter, spacing } = calculateViewBox(
+    element,
+    options,
+  );
 
-  const moveToStart = `M ${
-    horizontalCenter - spacing * orbitNumber
-  },${verticalCenter}`;
+  const moveToStart = `M ${horizontalCenter - spacing * orbitNumber
+    },${verticalCenter}`;
 
   const arcRadius = spacing * orbitNumber;
-  const archFirstHalf = `A ${arcRadius},${arcRadius} 0 1 1 ${
-    horizontalCenter + arcRadius
-  },${verticalCenter}`;
-  const archSecondHalf = `A ${arcRadius},${arcRadius} 0 1 1 ${
-    horizontalCenter - arcRadius
-  },${verticalCenter}`;
+  const archFirstHalf = `A ${arcRadius},${arcRadius} 0 1 1 ${horizontalCenter + arcRadius
+    },${verticalCenter}`;
+  const archSecondHalf = `A ${arcRadius},${arcRadius} 0 1 1 ${horizontalCenter - arcRadius
+    },${verticalCenter}`;
 
   orbitNode.setAttribute(
     "d",
