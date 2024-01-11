@@ -1,6 +1,6 @@
-# Simple-periodic-table-data
+# Render-atom-bohr-js
 
-A small package that provides necessary data and utils to construct periodic table of elements. Based on the data from https://github.com/ACollectionOfAtoms/atomic-bohr-model
+A tool to render animated SVG Atom [Bohr Model](https://en.wikipedia.org/wiki/Bohr_model)
 
 ## Documentation
 
